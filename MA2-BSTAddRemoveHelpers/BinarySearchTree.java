@@ -2,7 +2,7 @@
  *	Microassignment: BST Add and Remove Helpers
  *
  *  BinarySearchTree: A Binary Tree Implementation
- * 
+ *
  * 	Contributors:
  * 		Bolong Zeng <bzeng@wsu.edu>, 2018
  *		Aaron S. Crandall <acrandal@wsu.edu>, 2019
@@ -14,20 +14,20 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 
 	// Keeps track of the remove direction (left or right sub tree)
 	private int _remove_counter = 0;
-	
+
 	// Keeps track of BST size (count of nodes)
 	private int _size_counter = 0;
-	
+
 	// Root node of tree, can be null
 	protected BinaryNode<T> _root = null;
-	
+
 	// Removes the largest element from the SUBTREE starting at root
 	// Uses a recursive algorithm to implement this behavior
 	protected BinaryNode<T> removeLargest(BinaryNode<T> root)
 	{
 		// NULL tree/empty tree
 		if (root == null) { return null; }
-		
+
 		// BASE CASE: root is the largest
 		if (root.getRightChild() == null)
 		{
@@ -37,35 +37,35 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 		BinaryNode<T> new_right = removeLargest(root.getRightChild());
 
 		// Reconfigure our right pointer to the returned value
-		root.setRightChild(new_right);				
-		
+		root.setRightChild(new_right);
+
 		return root;
 	}
-	
+
 	// Removes the smallest element from the tree
 	// Uses an iterative algorithm to implement this behavior
 	protected BinaryNode<T> removeSmallest(BinaryNode<T> root)
 	{
 		// NULL tree/empty tree
 		if (root == null) return null;
-		
+
 		// Without recursion
 		BinaryNode<T> pre = null;
-		
+
 		// root is the smallest value
 		while (root.getLeftChild() != null)
 		{
 			pre = root;
 			root = root.getLeftChild();
 		}
-		
+
 		// Check if pre is null
 		if(pre != null)
 			pre.setLeftChild(root.getRightChild());
-		
+
 		return pre;
 	}
-	
+
 	// Finds the largest value in tree starting at root and returns reference to it
 	protected BinaryNode<T> findLargest(BinaryNode<T> root)
 	{
@@ -73,7 +73,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 			root = root.getRightChild();
 		return root;
 	}
-	
+
 	// Finds the smallest value in tree starting at root and returns reference to it
 	protected BinaryNode<T> findSmallest(BinaryNode<T> root)
 	{
@@ -81,15 +81,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 			root = root.getLeftChild();
 		return root;
 	}
-	
+
 	// Adds a new Element to the tree starting at root
 	// Microassignment: MA TODO
 	protected BinaryNode<T> addElementHelper(BinaryNode<T> root, T item)
 	{
 		// Pseudo code:
 		//  Check for null first
-		//  If null, create new node return pointer to that node		
-		
+		//  If null, create new node return pointer to that node
+
 		//  If not null, compare value, add to correct place
 		//  You can choose whether to use recursion or not to compare, use this
 		//   method of the item: item.compareTo(/*arguments to compare to*/)
@@ -97,18 +97,38 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 		//   compareTo() iterface
 
 		// MA TODO
+        if (root == null) {
+            root = new BinaryNode<T>(item);
+            _size_counter++;
+        } else if (item.compareTo(root.getValue()) < 0) {               // item < root
+            BinaryNode<T> left = root.getLeftChild();
+            if (left == null) {
+                root.setLeftChild(new BinaryNode<T>(item));
+                _size_counter++;
+            } else {
+                addElementHelper(left, item);
+            }
+        } else if (item.compareTo(root.getValue()) > 0) {               // item > root
+            BinaryNode<T> right = root.getRightChild();
+            if (right == null) {
+                root.setRightChild(new BinaryNode<T>(item));
+                _size_counter++;
+            } else {
+                addElementHelper(right, item);
+            }
+        }
 
 		//  Always return root because we don't know where the recursion ends
 		return root;
 	}
-	
+
 	// Removes an Element by value from the tree starting at root
 	// Microassignment: MA TODO
 	protected BinaryNode<T> removeElementHelper(BinaryNode<T> root, T item)
 	{
 		// Recursion base case - empty tree, return
 		if (root == null) { return root; }
-		
+
 		// Pseudo code:
 		//  Three possibilities:
 		//   We found the item (root value == item)
@@ -116,22 +136,37 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 		//   Item is greater than root (item > root)
 		if (item.compareTo(root.getValue()) == 0)
 		{
-			// Increment removal counter
-			_remove_counter++;
-			
-			// We found the item, so do we remove from the left or right?
-			if (_remove_counter % 2 == 0)
-			{
-				// Let's assume we are removing from the left when it's an even number
-				// MA TODO
+            BinaryNode<T> leftChild = root.getLeftChild();
+            BinaryNode<T> rightChild = root.getRightChild();
 
-			}
-			else
-			{
-				// Remove from the right subtree when it's an odd number
-				// MA TODO
+            if (leftChild == null && rightChild == null) {               // no children:
+                root = null;
+            } else if (leftChild != null && rightChild == null) {       // only left child:
+                root = leftChild;
+            } else if (leftChild == null && rightChild != null) {       // only right child:
+                root = rightChild;
+            } else {                                                    // two children:
+    			// Increment removal counter
+    			_remove_counter++;
 
+    			// We found the item, so do we remove from the left or right?
+    			if (_remove_counter % 2 == 0)
+    			{
+    				// Let's assume we are removing from the left when it's an even number
+    				// MA TODO
+                    root.setValue(findLargest(leftChild).getValue());
+                    root.setLeftChild(removeLargest(leftChild));
+    			}
+    			else
+    			{
+    				// Remove from the right subtree when it's an odd number
+    				// MA TODO
+                    root.setValue(findSmallest(rightChild).getValue());
+                    root.setRightChild(removeSmallest(rightChild));
+                }
 			}
+
+            _size_counter--;
 		}
 		else if (item.compareTo(root.getValue()) < 0)
 		{
@@ -140,12 +175,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 					root.getLeftChild(),
 					item
 					);
-			
+
 			// The recursive call *might* have altered our
 			//  left child's structure. Inform root of this change
 			root.setLeftChild(result);
 		}
-		else 
+		else
 		{
 			// Item is greater than root
 			//  finding it in the right subtree
@@ -155,7 +190,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 					);
 			root.setRightChild(result);
 		}
-		
+
 		return root;
 	}
 
@@ -167,7 +202,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 	void printPostorderHelper(BinaryNode<T> root)
 	{
 		if (root == null) return;
-		
+
 		printPostorderHelper(root.getLeftChild());
 		printPostorderHelper(root.getRightChild());
 		System.out.print(" " + root.getValue());
@@ -181,7 +216,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 	void printPreorderHelper(BinaryNode<T> root)
 	{
 		if (root == null) return;
-		
+
 		System.out.print(" " + root.getValue());
 		printPreorderHelper(root.getLeftChild());
 		printPreorderHelper(root.getRightChild());
@@ -195,7 +230,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 	void printInorderHelper(BinaryNode<T> root)
 	{
 		if (root == null) return;
-		
+
 		printInorderHelper(root.getLeftChild());
 		System.out.print(" " + root.getValue());
 		printInorderHelper(root.getRightChild());
@@ -230,7 +265,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 	void getAsArrayListPreOrderHelper(BinaryNode<T> root, ArrayList<T> list)
 	{
 		if (root == null) return;
-		
+
 		list.add(root.getValue());
 		getAsArrayListPreOrderHelper(root.getLeftChild(), list);
 		getAsArrayListPreOrderHelper(root.getRightChild(), list);
