@@ -2,11 +2,11 @@
  *  Microassignment: Avl Tree Rotations
  *
  *  AvlTree: Yet another Avl Tree Implementation
- * 
+ *
  *  Contributors:
  *    Bolong Zeng <bzeng@wsu.edu>, 2018
  *    Aaron S. Crandall <acrandal@wsu.edu>, 2019
- * 
+ *
  *  Copyright:
  *   For academic use only under the Creative Commons
  *   Attribution-NonCommercial-NoDerivatives 4.0 International License
@@ -15,14 +15,14 @@
 
 import java.util.ArrayList;
 
-public class AvlTree<T extends Comparable<T>> extends Collection<T> 
+public class AvlTree<T extends Comparable<T>> extends Collection<T>
 {
 	private int _remove_counter = 0; 	// Keeps track of the remove direction (left or right)
 	private int _size_counter = 0; 		// Keeps track of Tree's size
 	protected AvlNode<T> _root = null;	// Tree's root node reference
 
 	//************************************************************************/
-	//** Start of MA TODOs 
+	//** Start of MA TODOs
 	//** There are three TODOs in this MA
 	//************************************************************************/
 
@@ -33,15 +33,19 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		if (root == null)
 			return root;
 
-		// Remove this return and replace with the rotate algorithm
-		return root;
-		
+
 		// New root comes from left side
 		// Reassign right child to new root's left child
 		// Recalculate root's height as it has probably changed
 		// With that done, we can now reassign old root to new root
 		// And perform additional balances as necessary
 		// Return the new root
+
+		AvlNode<T> newRoot = root.getLeftChild();
+		root.setLeftChild(newRoot.getRightChild());
+		root = setHeight(root);
+		newRoot.setRightChild(root);
+		return newRoot;
 	}
 
 	// MA TODO: Implement me SECOND!
@@ -51,16 +55,21 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		if (root == null)
 			return root;
 
-		return root;
-		
+
 		// New root comes from right side
 		// Reassign right child to new root's left child
 		// Recalculate root's height as it has probably changed
 		// With that done, we can now reassign old root to new root
 		// And perform additional balances as necessary
 		// return the new root
+
+		AvlNode<T> newRoot = root.getRightChild();
+		root.setRightChild(newRoot.getLeftChild());
+		root = setHeight(root);
+		newRoot.setLeftChild(root);
+		return newRoot;
 	}
-	
+
 	// MA TODO: Implement me THIRD!
 	//  The purpose of this function is to figure out where the imbalance
 	//   occurs within root (left or right) and return the result of the
@@ -70,7 +79,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		// Check for null roots first
 		if (root == null)
 			return root;
-		
+
 		// MA TODO implement before this return statement!
 		//  If you find an imbalance, you will need to either
 		//  return the result of rotateLeft or rotateRight
@@ -80,8 +89,24 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		// Rotate as required, which returns a new root pointer
 		// Set new height on new root
 		// Return updated root
-		
-		return root;
+
+		if (root.getBalanceFactor() < 0) {
+			AvlNode<T> left = root.getLeftChild();
+			if (left.getBalanceFactor() < 0) {		// left left case
+				return rotateRight(root);
+			} else {								// left right case
+				root.setLeftChild(rotateLeft(left));
+				return rotateRight(root);
+			}
+		} else {
+			AvlNode<T> right = root.getRightChild();
+			if (right.getBalanceFactor() > 0) {		// right right case
+				return rotateLeft(root);
+			} else {								// right left case
+				root.setRightChild(rotateRight(right));
+				return rotateLeft(root);
+			}
+		}
 	}
 
 	//************************************************************************/
@@ -92,7 +117,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 	protected AvlNode<T> removeLargest(AvlNode<T> root)
 	{
 		if (root == null) { return root; }
-		
+
 		// BASE CASE: root is largest (has no right node)
 		if (root.getRightChild() == null)
 		{
@@ -108,14 +133,14 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 			return root;
 		}
 	}
-	
+
 	// Removes the smallest element in the subtree starting at root
 	// Update: using the same recursion as removeLargest, UNLIKE BST MA code
 	protected AvlNode<T> removeSmallest(AvlNode<T> root)
 	{
 		if (root == null)
 			return root;
-		
+
 		// BASE CASE: root is smallest (has no left node)
 		if (root.getLeftChild() == null)
 		{
@@ -131,12 +156,12 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 			return root;
 		}
 	}
-	
+
 	// Used by setHeight to handle null nodes who have a height of -1
 	private int calcNodeHeight(AvlNode<T> node) {
 		return (node == null) ? -1 : node.getHeight();
 	}
-	
+
 	// Sets the height of a node and balances unbalanced nodes
 	protected AvlNode<T> setHeight(AvlNode<T> root)
 	{
@@ -148,10 +173,10 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		//  So, to save a future you, just put in the curly brackets: { return root; }
 		if (root == null)
 			return root;
-		
+
 		AvlNode<T> left = root.getLeftChild();
 		AvlNode<T> right = root.getRightChild();
-		
+
 		// The following code comes from another source. I left it commented out for comparision's sake.
 		//  It *does* calculate heights properly, but the use of subtraction here is confusing
 
@@ -165,10 +190,10 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		// This is Crandall's solution. See helper calc function. Which is easier to read?
 		//  Yes, you'll need to know what Math.max() does, but that's a library function you can look up.
 		int height = Math.max(calcNodeHeight(left), calcNodeHeight(right)) + 1;
-		
+
 		// Reassign new height to root
 		root.setHeight(height);
-		
+
 		// Check to see if balance factor is out of balance
 		int balance_factor = root.getBalanceFactor();
 		if (Math.abs(balance_factor) > 1)
@@ -177,7 +202,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		}
 		return root;
 	}
-	
+
 	protected AvlNode<T> addElementHelper(AvlNode<T> root, T item)
 	{
 		// BASE CASE: create new node
@@ -188,7 +213,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 			_size_counter++;			// Bookeeping: track tree size
 			return setHeight(root);		// Set height of new node and return it
 		}
-		
+
 		// Otherwise: traverse tree, use the same helper as in BST
 		// RECURSIVE CASE: figure out which child to call
 		//  is "item" larger than us (root's item)?
@@ -208,22 +233,22 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		{
 			return root;			// Note: this is if the added value is already in the tree
 		}
-		
+
 		// For BST, this process would end
 		//return root;
-		
+
 		// For AVL though, we need to return a balanced node
 		//  This could have AVL rotations change which root is returned, but
 		//  that isn't important at this level of the recursive calls
 		return setHeight(root);
 	}
-	
+
 	protected AvlNode<T> removeElementHelper(AvlNode<T> root, T item)
 	{
 		// Use the same helper as in BST
 		// Check for a null tree and return as base case
 		if (root == null) { return null; }
-		
+
 		// Three possibilities:
 		//  we found the item (root value == item)
 		//  item is less than root (item < root)
@@ -232,7 +257,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		{
 			// Increment removal counter
 			_remove_counter++;
-			
+
 			// We found the item
 			//  do we remove from the left or right?
 			if (_remove_counter % 2 == 0)
@@ -243,10 +268,10 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 					// Left subtree remove
 					//  We need the largest from the left side
 					AvlNode<T> largest = findLargest(root.getLeftChild());
-					
+
 					// Take the largest's value, put inside root
 					root.setValue(largest.getValue());
-					
+
 					// Having gotten the value, we can now remove the node from the tree
 					AvlNode<T> result = removeLargest(root.getLeftChild());
 					root.setLeftChild(result);
@@ -264,9 +289,9 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 				if (root.getRightChild() != null)
 				{
 					AvlNode<T> smallest = findSmallest(root.getRightChild());
-					
+
 					root.setValue(smallest.getValue());
-					
+
 					AvlNode<T> result = removeSmallest(root.getRightChild());
 					root.setRightChild(result);
 					return setHeight(root);
@@ -275,7 +300,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 				{
 					return setHeight(removeLargest(root));
 				}
-			}				
+			}
 		}
 		else if (item.compareTo(root.getValue()) < 0)
 		{
@@ -295,18 +320,18 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 					);
 			root.setRightChild(result);
 		}
-		
-		// Similar to addElementHelper, need to balance the (possibly replaced via rotate) root		
+
+		// Similar to addElementHelper, need to balance the (possibly replaced via rotate) root
 		return setHeight(root);
 	}
-	
+
 	protected AvlNode<T> findLargest(AvlNode<T> root)
 	{
 		while(root != null && root.getRightChild() != null)
 			root = root.getRightChild();
 		return root;
 	}
-	
+
 	protected AvlNode<T> findSmallest(AvlNode<T> root)
 	{
 		while(root != null && root.getLeftChild() != null)
@@ -341,7 +366,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 	void getAsArrayListPreOrderHelper(AvlNode<T> root, ArrayList<T> list)
 	{
 		if (root == null) return;
-		
+
 		list.add(root.getValue());
 		getAsArrayListPreOrderHelper(root.getLeftChild(), list);
 		getAsArrayListPreOrderHelper(root.getRightChild(), list);
@@ -376,5 +401,5 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 	public int getSize() {
 		return _size_counter;
 	}
-	
+
 }
