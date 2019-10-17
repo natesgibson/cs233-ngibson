@@ -2,11 +2,11 @@
  *  Microassignment: Probing Hash Table addElement and removeElement
  *
  *  LinearHashTable: Yet another Hash Table Implementation
- * 
+ *
  *  Contributors:
  *    Bolong Zeng <bzeng@wsu.edu>, 2018
  *    Aaron S. Crandall <acrandal@wsu.edu>, 2019
- * 
+ *
  *  Copyright:
  *   For academic use only under the Creative Commons
  *   Attribution-NonCommercial-NoDerivatives 4.0 International License
@@ -40,8 +40,8 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
     {
         super(other);
 	}
-    
-   
+
+
     // ***** MA Section Start ************************************************ //
 
     // Concrete implementation for parent's addElement method
@@ -49,13 +49,21 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
     {
         // Check for size restrictions
         resizeCheck();
- 
+
         // Calculate hash based on key
         int hash = super.getHash(key);
 
         // MA TODO: find empty slot to insert (update HashItem as necessary)
 
-
+        while (true) {
+            HashItem<K, V> curr = super._items.elementAt(hash);
+            if (curr == null || curr.isEmpty()) {
+                super._items.set(hash, new HashItem<K, V>(key, value, false));
+                super._number_of_elements++;
+                break;
+            }
+            hash = (hash + 1) % super._items.size();
+        }
 
         // Remember how many things we are presently storing (size N)
     	//  Hint: do we always increase the size whenever this function is called?
@@ -72,15 +80,26 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         // MA TODO: find slot to remove. Remember to check for infinite loop!
         //  ALSO: Use lazy deletion - see structure of HashItem
 
+        HashItem<K, V> curr = super._items.elementAt(hash);
+        while (curr.getKey() != null) {
+            if (curr.getKey() == key) {
+                curr.setIsEmpty(true);
+                super._number_of_elements--;
+                break;
+            } else {
+                hash = (hash + 1) % super._items.size();
+                curr = super._items.elementAt(hash);
+            }
+        }
 
         // Make sure decrease hashtable size
     	//  Hint: do we always reduce the size whenever this function is called?
         // _number_of_elements--;
-        
+
     }
-    
+
     // ***** MA Section End ************************************************ //
-    
+
 
     // Public API to get current number of elements in Hash Table
 	public int size() {
@@ -91,23 +110,23 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
 	public boolean isEmpty() {
 		return this._number_of_elements == 0;
 	}
-    
+
     // Returns true if the key is contained in the hash table
     public boolean containsElement(K key)
     {
         int hash = super.getHash(key);
         HashItem<K, V> slot = _items.elementAt(hash);
-        
+
         // Left incomplete to avoid hints in the MA :)
         return false;
     }
-    
+
     // Returns the item pointed to by key
     public V getElement(K key)
     {
         int hash = super.getHash(key);
         HashItem<K, V> slot = _items.elementAt(hash);
-        
+
         // Left incomplete to avoid hints in the MA :)
         return null;
     }
@@ -123,11 +142,11 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         }
         return false;
     }
-    
+
     // Called to do a resize as needed
     protected void resizeCheck()
     {
-        // Right now, resize when load factor > 0.5; it might be worth it to experiment with 
+        // Right now, resize when load factor > 0.5; it might be worth it to experiment with
         //  this value for different kinds of hashtables
         if (needsResize())
         {
