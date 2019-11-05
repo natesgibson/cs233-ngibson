@@ -3,10 +3,10 @@
  *
  *  BruteForceDupDetector: An N^2 "Biggest Hammer" approach to duplicate detection
  *   Duplicates Detector / Filter
- * 
+ *
  *  Contributors:
  *    Aaron S. Crandall <acrandal@wsu.edu>, 2019
- * 
+ *
  *  Copyright:
  *   For academic use only under the Creative Commons
  *   Attribution-NonCommercial-NoDerivatives 4.0 International License
@@ -22,13 +22,13 @@ class HashMapDupDetector extends StringDupDetectorBase {
         // Constructor - should set your algorithms general metadata
 
         // Give your algorithm a name to identify it
-        algorithm_name = "HashMap O(1) Hotrod!";
+        algorithm_name = "The HashMap O(N) fast-but-street-legal motor-vehicle string-duplicate-detector algorithm.";
 
         // Describe the key feature(s) of your algorithm
-        description = "Uses a whatawhat?";
+        description = "Uses two Hash Maps to chech if each string is a duplicate.";
 
         // Estimate your algorithm's complexity
-        complexity = "I dunno!";
+        complexity = "N";
     }
 
     // The one function that does the duplicates detection for your algorithm.
@@ -47,6 +47,15 @@ class HashMapDupDetector extends StringDupDetectorBase {
 
         // PA1 CODE GOES HERE! -- MUST use the HashMap (map) for your solution, not Crandall's Brute Force searching!
 
+        HashMap<String, String> duplicatesMap = new HashMap<>();        // used for O(1) contains
+
+        for (String s : strings) {
+            if (map.containsKey(s) && !duplicatesMap.containsKey(s)) {
+                duplicatesMap.put(s, s);
+                duplicates.add(s);
+            }
+            map.put(s, s);
+        }
 
         // Should have an ArrayList of duplicates to return... right?
         return duplicates;
