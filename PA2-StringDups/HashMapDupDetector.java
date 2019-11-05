@@ -25,7 +25,7 @@ class HashMapDupDetector extends StringDupDetectorBase {
         algorithm_name = "The HashMap O(N) fast-but-street-legal motor-vehicle string-duplicate-detector algorithm.";
 
         // Describe the key feature(s) of your algorithm
-        description = "Uses two Hash Maps to chech if each string is a duplicate.";
+        description = "Uses two Hash Maps to check if each string is a duplicate.";
 
         // Estimate your algorithm's complexity
         complexity = "N";
