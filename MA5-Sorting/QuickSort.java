@@ -21,15 +21,15 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
 
   	public ArrayList<T> sort(SortStats stats, ArrayList<T> data) {
         if (data.size() > 1) {
-            int pivotIndex = getPivot(data);
+            int pivotIndex = getPivot(stats, data);
             T pivotValue = data.remove(pivotIndex);
 
             ArrayList<T> less = new ArrayList<T>();
             ArrayList<T> greater = new ArrayList<T>(); // technically >=
 
             for (T curr : data) {
-                // STATS COMPARISONS++
-                // STATS SWAPS++
+                stats.comparisons++;
+                stats.swaps++;
                 if (pivotValue.compareTo(curr) > 0) {
                     less.add(curr);
                 } else {
@@ -48,7 +48,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
 
     // Returns the index of pivot = Median(first, mid, last).
     // Returns 0 if less than 3 elements.
-    private int getPivot(ArrayList<T> data) {
+    private int getPivot(SortStats stats, ArrayList<T> data) {
         int size = data.size();
         if (size < 3){
             return 0;
@@ -58,14 +58,14 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
             T last = data.get(size - 1);
 
             // check pivot is first
-            // STATS COMPARISONS += 4
+
             if ((first.compareTo(mid) > 0 && first.compareTo(last) < 0) ||
                 (first.compareTo(mid) < 0 && first.compareTo(last) > 0)) {
                 return 0;
             }
 
             // check pivot is middle
-            // STATS COMPARISONS += 4
+            stats.comparisons += 4;
             if ((mid.compareTo(first) > 0 && mid.compareTo(last) < 0) ||
                 (mid.compareTo(first) < 0 && mid.compareTo(last) > 0)) {
                 return size / 2;

@@ -3,11 +3,11 @@
  *
  *  [this file]: Main driver and test file
  *   Sorting Microassignment
- * 
+ *
  *  Contributors:
  *    Aaron S. Crandall <acrandal@wsu.edu>, 2019
  *    Bolong Zeng, 2018
- * 
+ *
  *  Copyright:
  *   For academic use only under the Creative Commons
  *   Attribution-NonCommercial-NoDerivatives 4.0 International License
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Sorting_main {
-	
+
 	public static void main(String[] args) {
 		int testing_result = 0;
 
@@ -130,7 +130,7 @@ public class Sorting_main {
 		if( ret == 0 ) {
 			System.out.println("PASS");
 		}
-		else 
+		else
 		{
 			System.out.println("FAIL");
 		}

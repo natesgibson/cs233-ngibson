@@ -3,11 +3,11 @@
  *
  *  [this file]: Insertion Sort Reference Implementation
  *   Implements Insertion Sort
- * 
+ *
  *  Contributors:
  *    Aaron S. Crandall <acrandal@wsu.edu>, 2019
  *    Bolong Zeng, 2018
- * 
+ *
  *  Copyright:
  *   For academic use only under the Creative Commons
  *   Attribution-NonCommercial-NoDerivatives 4.0 International License
@@ -35,7 +35,7 @@ public class InsertionSort<T extends Comparable<T>> extends Sorter<T> {
                     data.set(j + 1, curr_candidate);
                     j--;
                 }
-                else 
+                else
                 {
                     break;
                 }
