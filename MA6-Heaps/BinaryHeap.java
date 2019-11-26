@@ -3,10 +3,10 @@
  *
  *  [this file]: Main Heap class
  *   Heaps Microassignment
- * 
+ *
  *  Contributors:
  *    Aaron S. Crandall <acrandal@wsu.edu>, 2019
- * 
+ *
  *  Copyright:
  *   For academic use only under the Creative Commons
  *   Attribution-NonCommercial-NoDerivatives 4.0 International License
@@ -110,6 +110,19 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
 
     private void percolateDown( int hole )
     {
-        // MA TODO: Write some kind of heap/percolateUp function
+        AnyType parent = data.get(hole);
+        AnyType child1 = data.get(hole * 2);
+        AnyType child2 = data.get((hole * 2) + 1);
+        if (child1 != null) {
+            if (child1.compareTo(child2) < 0) {
+                if (parent.compareTo(child1) > 0) {
+                    percolateDown(child1);
+                }
+            } else if (child2 != null) {
+                if (parent.compareTo(child2) > 0) {
+                    percolateDown(child2);
+                }
+            }
+        }
     }
 }
