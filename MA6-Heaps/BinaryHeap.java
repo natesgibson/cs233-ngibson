@@ -105,22 +105,38 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     //  Microassignment Section: Implement percolations
     // ********************************************************************* //
     public void insert(AnyType x) {
-        // MA TODO: Write some kind of heap/percolate insert function
+        data.add(currentSize, x);
+        percolateUp(currentSize++);
     }
 
-    private void percolateDown( int hole )
-    {
-        AnyType parent = data.get(hole);
-        AnyType child1 = data.get(hole * 2);
-        AnyType child2 = data.get((hole * 2) + 1);
-        if (child1 != null) {
-            if (child1.compareTo(child2) < 0) {
-                if (parent.compareTo(child1) > 0) {
-                    percolateDown(child1);
-                }
-            } else if (child2 != null) {
+    private void percolateUp(int hole) {
+        if (hole > 0) {
+            AnyType parent = data.get((hole - 1) / 2);
+            AnyType child = data.get(hole);
+            if (parent.compareTo(child) > 0) {
+                data.set(hole, parent);
+                data.set ((hole - 1) / 2, child);
+                percolateUp((hole - 1) / 2);
+            }
+        }
+    }
+
+    private void percolateDown( int hole ) {
+        if ((hole * 2) + 1 <= currentSize - 1) {
+            AnyType parent = data.get(hole);
+            AnyType child1 = data.get((hole * 2) + 1);
+            AnyType child2 = data.get((hole * 2) + 2);
+            if ((hole * 2) + 2 <= currentSize - 1 && child2.compareTo(child1) < 0) {
                 if (parent.compareTo(child2) > 0) {
-                    percolateDown(child2);
+                    data.set((hole * 2) + 2, parent);
+                    data.set(hole, child2);
+                    percolateDown((hole * 2) + 2);
+                }
+            } else {
+                if (parent.compareTo(child1) > 0) {
+                    data.set((hole * 2) + 1, parent);
+                    data.set(hole, child1);
+                    percolateDown((hole * 2) + 1);
                 }
             }
         }
